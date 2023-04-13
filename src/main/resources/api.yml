@@ -1,0 +1,299 @@
+openapi: 3.0.0
+info:
+  title: Poker Planning API
+  description: REST API to support a poker planning session
+  version: 0.0.1
+paths:
+  /sessions:
+    get:
+      summary: List of existing poker planning sessions
+      tags:
+        - session management
+      responses:
+        '200': # status code
+          description: A JSON array of session
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PokerPlanningSession"
+    post:
+      summary: Creation of a new session
+      tags:
+        - session management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PokerPlanningSession"
+      responses:
+        '201': # status code
+          description: Created JSON object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PokerPlanningSession"
+  /sessions/{idSession}:
+    parameters:
+      - $ref: "#/components/parameters/IdSessionParam"
+    get:
+      summary: Session information
+      tags:
+        - session management
+      responses:
+        '200':
+          description: The Resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PokerPlanningSession"
+        '404':
+          description: Not found
+    delete:
+      summary: Destroy session
+      tags:
+        - session management
+      responses:
+        '200':
+          description: Session destroyed info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PokerPlanningSession"
+        '404':
+          description: Not found
+  /sessions/{idSession}/members:
+    parameters:
+      - $ref: "#/components/parameters/IdSessionParam"
+    get:
+      summary: List of Members in the session
+      tags:
+        - session management
+      responses:
+        '200':
+          description: List of Members join in
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+        '204':
+          description: No content
+        '404':
+          description: Not found
+    post:
+      summary: Join in the session
+      tags:
+        - session management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Member"
+      responses:
+        '201': # status code
+          description: Created JSON object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        '404':
+          description: Not found
+  /sessions/{idSession}/members/{idMember}:
+    parameters:
+      - $ref: "#/components/parameters/IdSessionParam"
+      - $ref: "#/components/parameters/IdMemberParam"
+    get:
+      summary: Logout a Member
+      tags:
+        - session management
+      responses:
+        '200':
+          description: Logout member
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+        '204':
+          description: No content
+  /sessions/{idSession}/stories:
+    parameters:
+      - $ref: "#/components/parameters/IdSessionParam"
+    get:
+      summary: list of user stories
+      tags:
+        - user stories
+      responses:
+        '200':
+          description: The Resource
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+        '404':
+          description: Not found
+    post:
+      summary: Creation of a user story
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Member"
+      tags:
+        - user stories
+      responses:
+        '201': # status code
+          description: Created JSON object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        '404':
+          description: Not found
+  /sessions/{idSession}/stories/{idUserStory}:
+    parameters:
+      - $ref: "#/components/parameters/IdSessionParam"
+      - $ref: "#/components/parameters/IdUserStoryParam"
+    put:
+      summary: Update story information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Member"
+      tags:
+        - user stories
+      responses:
+        '200': # status code
+          description: Created JSON object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        '404':
+          description: Not found
+    delete:
+      summary: Delete user story
+      tags:
+        - user stories
+      responses:
+        '200': # status code
+          description: Created JSON object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+  /sessions/{idSession}/votes:
+    parameters:
+      - $ref: "#/components/parameters/IdSessionParam"
+    get:
+      summary: List of votes emmited
+      tags:
+        - votations
+      responses:
+        '200':
+          description: List of votes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Vote"
+    post:
+      summary: Emit a vote
+      tags:
+        - votations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vote"
+      responses:
+        '201': # status code
+          description: Created JSON object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vote"
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+components:
+  parameters:
+    IdSessionParam:
+      name: idSession
+      in: path
+      required: true
+      schema:
+        type: string
+    IdMemberParam:
+      name: idMember
+      in: path
+      required: true
+      schema:
+        type: string
+    IdUserStoryParam:
+      name: idUserStory
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    PokerPlanningSession:
+      type: object
+      required:
+        - idSession
+      properties:
+        idSession:
+          type: string
+          readOnly: true
+        title:
+          type: string
+    Member:
+      type: object
+      required:
+        - idMember
+        - name
+      properties:
+        idMember:
+          type: string
+          readOnly: true
+        name:
+          type: string
+    UserStory:
+      type: object
+      properties:
+        idUserStory:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+            - PENDING
+            - VOTING
+            - VOTE
+          default: PENDING
+    Vote:
+      type: object
+      required:
+        - idMember
+        - idUserStory
+      properties:
+        idMember:
+          type: string
+        idUserStory:
+          type: string
+        value:
+          type: string
